@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AddcolumnController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('students', [StudentController::class, 'index']);
+Route::get('add-student', [StudentController::class, 'store']);
+
+
+Route::get('columns', [AddcolumnController::class, 'columns']);
+Route::post('add-columns', [AddcolumnController::class, 'AddColumns']);
