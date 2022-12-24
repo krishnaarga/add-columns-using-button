@@ -12,6 +12,11 @@
     </head>
     <body>
         <div class="container mt-5">
+            @if (session()->has('message'))
+                <div class="alert alert-info">
+                    {{ session('message') }}
+                </div>
+            @endif
             <form method="post" action="add-columns" id="stdForm">
                 @csrf
                 <div class="row">
