@@ -12,36 +12,82 @@
     </head>
     <body>
         <h2 class="text-center">STUDENTS</h2>
-
         <div class="container">
             <div class="row">
+                @if (session()->has('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 <div class="col-md-12">
                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-session-tab" data-bs-toggle="pill" data-bs-target="#pills-session" type="button" role="tab" aria-controls="pills-session" aria-selected="true">SESSION</button>
+                            <button class="nav-link" id="pills-addstudent-tab" data-bs-toggle="pill" data-bs-target="#pills-addstudent" type="button" role="tab" aria-controls="pills-addstudent" aria-selected="false">ADD STUDENT</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-database-tab" data-bs-toggle="pill" data-bs-target="#pills-database" type="button" role="tab" aria-controls="pills-database" aria-selected="false">DATABASE</button>
+                            <button class="nav-link active" id="pills-studentlist-tab" data-bs-toggle="pill" data-bs-target="#pills-studentlist" type="button" role="tab" aria-controls="pills-addstudent" aria-selected="false">Session Student</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-database-tab" data-bs-toggle="pill" data-bs-target="#pills-database" type="button" role="tab" aria-controls="pills-database" aria-selected="false">Database Student</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-session" role="tabpanel" aria-labelledby="pills-session-tab">
+                        <div class="tab-pane fade" id="pills-addstudent" role="tabpanel" aria-labelledby="pills-addstudent-tab">
+                            <form method="post" action="add-student">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="age" class="form-label">Age</label>
+                                    <input type="age" class="form-control" name="age" id="age" placeholder="Enter Age">
+                                </div>
+                                <div class="text-center">
+                                    <input type="submit" value="Add Student" class="btn btn-success">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade show active" id="pills-studentlist" role="tabpanel" aria-labelledby="pills-studentlist-tab">
                             <table class="table table-striped table-hover table-hover">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>#</th>
-                                        <th>First</th>
-                                        <th>Last</th>
-                                        <th>Handle</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Age</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th>1</th>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
-                                    </tr>
+                                    @php 
+                                        $count = 0;
+                                    @endphp
+
+                                    @if(count($students) > 0)
+                                        @foreach($students as $key=>$student)
+                                            @php $count++; @endphp
+                                            <tr>
+                                                <th>{{$count}}</th>
+                                                <th>{{$student['name']}}</th>
+                                                <th>{{$student['email']}}</th>
+                                                <th>{{$student['age']}}</th>
+                                                <th>
+                                                    <a href="/edit/{{$key}}" class="btn btn-warning">Edit</a>
+                                                    <a href="/delete/{{$key}}" class="btn btn-danger">Delete</a>
+                                                </th>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center text-danger fw-bold">No Data Avalable</td>
+                                        </tr>
+                                    @endif
+
                                 </tbody>
                             </table>
                         </div>

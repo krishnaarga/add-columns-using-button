@@ -13,7 +13,9 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return view('students');
+        $session = session()->all();
+        $students = $session['database']??[];
+        return view('students', ['students'=>$students]);
     }
 
     /**
@@ -34,7 +36,18 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Form
+        $request->request->remove('_token');
+        $form_data = $request->all();
+        
+        // Session
+        $session = session()->all();
+        $session_database = $session['database']??[];
+        array_push($session_database, $form_data);
+        $request->session()->put('database', $session_database);
+
+        session()->flash('message', 'Student Added in Session');
+        return redirect('/students');
     }
 
     /**
@@ -56,7 +69,10 @@ class StudentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $session = session()->all();
+        $student_details = $session['database'][$id];
+
+        return view('student-edit', ['student_details'=>array_merge($student_details, ['id'=>$id])]);
     }
 
     /**
@@ -66,9 +82,24 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $id = $request->id;
+        $session = session()->all();
+        $session_database = $session['database'];    
+        
+        $session_database[$id]['name'] = $request->name;
+        $session_database[$id]['email'] = $request->email;
+        $session_database[$id]['age'] = $request->age;
+
+        session()->put('database', $session_database);
+
+        session()->flash('message', 'Student Updated successfully');
+        return redirect('/students');
+
+        
+        // echo '<pre>';
+        // print_r($session_database);
     }
 
     /**
@@ -79,6 +110,12 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $session = session()->all();
+        $session_database = $session['database'];
+
+        unset($session_database[$id]);
+        session()->put('database', $session_database);
+        session()->flash('message', 'Student Deleted successfully');
+        return redirect('/students');
     }
 }
