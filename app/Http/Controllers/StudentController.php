@@ -11,7 +11,7 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function s()
+    public function index()
     {
         return view('students');
     }
